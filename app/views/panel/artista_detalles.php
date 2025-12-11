@@ -56,29 +56,23 @@ $generos = $tabla_generos->readAllGeneros(); // Todos los géneros
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MTV | awards</title>
 
-    <!-- Icon -->
     <link rel="icon" href="../../../recursos/img/system/mtv-logo.jpg" type="image/x-icon">
 
-    <!-- Google Font: Source Sans Pro -->
-<link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
-<!-- Font Awesome -->
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<!-- AdminLTE Theme -->
-<link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 
-<!-- Toastr -->
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -93,7 +87,6 @@ $generos = $tabla_generos->readAllGeneros(); // Todos los géneros
             </ul>
         </nav>
 
-        <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="../../index3.html" class="brand-link">
                 <img src="../../../recursos/img/system/mtv-logo.jpg" alt="Logo" class="brand-image elevation-3"
@@ -121,7 +114,6 @@ $generos = $tabla_generos->readAllGeneros(); // Todos los géneros
             </div>
         </aside>
 
-        <!-- Content Wrapper -->
         <div class="content-wrapper">
             <?php
             $breadcrumb = array(
@@ -137,7 +129,6 @@ $generos = $tabla_generos->readAllGeneros(); // Todos los géneros
             echo mostrar_breadcrumb('Detalles del Artista', $breadcrumb);
             ?>
 
-            <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
                     <div class="row">
@@ -194,6 +185,15 @@ $generos = $tabla_generos->readAllGeneros(); // Todos los géneros
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label for="estatus_artista">Estado Actual</label>
+                                            <select class="form-control" name="estatus_artista" id="estatus_artista">
+                                                <option value="1" <?php if (isset($artista->estatus_artista) && $artista->estatus_artista == 1) echo 'selected'; ?>>Activo</option>
+                                                <option value="0" <?php if (isset($artista->estatus_artista) && $artista->estatus_artista == 0) echo 'selected'; ?>>Retirado / Inactivo</option>
+                                            </select>
+                                        </div>
+
                                     </div>
 
                                     <div class="card-footer">
