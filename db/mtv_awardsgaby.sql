@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 11-12-2025 a las 08:23:01
+-- Tiempo de generación: 11-12-2025 a las 15:00:06
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.3.14
 
@@ -205,8 +205,8 @@ CREATE TABLE IF NOT EXISTS `nominaciones` (
   `id_nominacion` int NOT NULL AUTO_INCREMENT,
   `fecha_nominacion` date DEFAULT (curdate()),
   `id_categoria_nominacion` int NOT NULL,
-  `id_album` int NOT NULL,
-  `id_artista` int NOT NULL,
+  `id_album` int DEFAULT NULL,
+  `id_artista` int DEFAULT NULL,
   `contador_nominacion` int DEFAULT '0',
   PRIMARY KEY (`id_nominacion`),
   KEY `fk_nominaciones_categorias` (`id_categoria_nominacion`),
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `nominaciones` (
 --
 
 INSERT INTO `nominaciones` (`id_nominacion`, `fecha_nominacion`, `id_categoria_nominacion`, `id_album`, `id_artista`, `contador_nominacion`) VALUES
-(1, '2025-12-10', 1, 1, 1, 0),
+(1, '2025-12-10', 1, 1, 1, 5),
 (2, '2025-12-10', 2, 2, 2, 0),
 (3, '2025-12-10', 3, 3, 3, 0),
 (4, '2025-12-10', 4, 4, 4, 0),
@@ -324,20 +324,26 @@ CREATE TABLE IF NOT EXISTS `votaciones` (
   `id_usuario` int NOT NULL,
   `ip_votante` varchar(45) DEFAULT NULL,
   `ua_votante` varchar(255) DEFAULT NULL,
+  `fecha_votacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_votacion`),
   KEY `id_artista` (`id_artista`),
   KEY `id_album` (`id_album`),
   KEY `id_usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Volcado de datos para la tabla `votaciones`
 --
 
-INSERT INTO `votaciones` (`fecha_creacion_votacion`, `id_votacion`, `id_artista`, `id_album`, `id_nominacion`, `id_usuario`, `ip_votante`, `ua_votante`) VALUES
-('2025-12-11 04:00:18', 1, 1, 1, 1, 13, NULL, NULL),
-('2025-12-11 04:00:18', 2, 1, 1, 1, 14, NULL, NULL),
-('2025-12-11 04:00:18', 3, 1, 1, 1, 12, NULL, NULL);
+INSERT INTO `votaciones` (`fecha_creacion_votacion`, `id_votacion`, `id_artista`, `id_album`, `id_nominacion`, `id_usuario`, `ip_votante`, `ua_votante`, `fecha_votacion`) VALUES
+('2025-12-11 04:00:18', 1, 1, 1, 1, 13, NULL, NULL, '2025-12-11 03:47:40'),
+('2025-12-11 04:00:18', 2, 1, 1, 1, 14, NULL, NULL, '2025-12-11 03:47:40'),
+('2025-12-11 04:00:18', 3, 1, 1, 1, 12, NULL, NULL, '2025-12-11 03:47:40'),
+('2025-12-11 09:48:13', 4, 1, 1, 1, 14, NULL, NULL, '2025-12-11 03:48:13'),
+('2025-12-11 09:48:31', 5, 1, 1, 1, 1, NULL, NULL, '2025-12-11 03:48:31'),
+('2025-12-11 09:49:00', 6, 1, 1, 1, 2, NULL, NULL, '2025-12-11 03:49:00'),
+('2025-12-11 09:53:34', 7, 1, 1, 1, 1, NULL, NULL, '2025-12-11 03:53:34'),
+('2025-12-11 14:32:15', 8, 1, 1, 1, 14, NULL, NULL, '2025-12-11 08:32:15');
 
 --
 -- Restricciones para tablas volcadas
