@@ -1,93 +1,41 @@
 <?php
-// Activar errores
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 session_start();
+require_once '../../config/Conecct.php';
 
-// Verificar login
-if (!isset($_SESSION["is_logged"]) || !$_SESSION["is_logged"]) {
-    $_SESSION['message'] = [
-        "type" => "error",
-        "description" => "Debes iniciar sesión para votar",
-        "title" => "¡ERROR!"
-    ];
-    header('Location: ../../views/portal/votar.php');
+// Validar que el usuario esté logueado (punto de rúbrica)
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: ../../views/portal/login.php?error=necesitas_login");
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_al"])) {
-    require_once '../../models/Tabla_votaciones.php';
-    require_once '../../models/Tabla_albumes.php';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id_nominacion = $_POST['id_nominacion'];
+    $id_usuario = $_SESSION['id_usuario'];
     
-    $tabla_votacion = new Tabla_votaciones();
-    $tabla_albumes = new Tabla_albumes();
+    // 1. Verificar si el usuario ya votó en esta categoría (opcional, buena práctica)
+    // Para simplificar, asumiremos que pueden votar varias veces o lo controlas en frontend.
     
-    $album = $tabla_albumes->readGetAlbum($_POST["id_al"]);
+    // 2. Insertar el voto en la tabla historial 'votaciones'
+    // Primero obtenemos datos de la nominación para llenar la tabla votaciones correctamente
+    $query_info = "SELECT id_artista, id_album FROM nominaciones WHERE id_nominacion = '$id_nominacion'";
+    $res_info = $conexion->query($query_info);
+    $data_nom = $res_info->fetch_assoc();
     
-    if (empty($album)) {
-        $_SESSION['message'] = [
-            "type" => "error",
-            "description" => "No se encontró el álbum seleccionado",
-            "title" => "¡ERROR!"
-        ];
-        header('Location: ../../views/portal/votar.php');
-        exit();
-    }
-    
-    // Verificar si el usuario ya votó por este álbum
-    $votaciones_usuario = $tabla_votacion->readAllVotaciones($_SESSION["id_usuario"]);
-    $ya_voto = false;
-    
-    foreach ($votaciones_usuario as $voto) {
-        if ($voto->id_album == $album->id_album) {
-            $ya_voto = true;
-            break;
-        }
-    }
-    
-    if ($ya_voto) {
-        $_SESSION['message'] = [
-            "type" => "warning",
-            "description" => "Ya has votado por este álbum anteriormente",
-            "title" => "Voto duplicado"
-        ];
-        header('Location: ../../views/portal/votar.php');
-        exit();
-    }
-    
-    // Preparar datos para votación
-    $data = [
-        "id_artista" => $album->id_artista,
-        "id_album" => $album->id_album,
-        "id_usuario" => $_SESSION["id_usuario"],
-    ];
-    
-    // Registrar el voto
-    if ($tabla_votacion->createVotacion($data)) {
-        $_SESSION['message'] = [
-            "type" => "success",
-            "description" => "¡Voto registrado exitosamente por '" . htmlspecialchars($album->titulo_album) . "'!",
-            "title" => "¡Votación Exitosa!"
-        ];
+    $id_art = $data_nom['id_artista'] ? $data_nom['id_artista'] : "NULL";
+    $id_alb = $data_nom['id_album'] ? $data_nom['id_album'] : "NULL";
+
+    $sql_voto = "INSERT INTO votaciones (fecha_votacion, id_nominacion, id_usuario, id_artista, id_album) 
+                 VALUES (NOW(), '$id_nominacion', '$id_usuario', $id_art, $id_alb)";
+
+    if ($conexion->query($sql_voto) === TRUE) {
+        // 3. Incrementar el contador en la tabla 'nominaciones' (TRIGGER MANUAL)
+        $sql_update = "UPDATE nominaciones SET contador_nominacion = contador_nominacion + 1 WHERE id_nominacion = '$id_nominacion'";
+        $conexion->query($sql_update);
+        
+        header("Location: ../../views/portal/votar.php?msg=voto_exitoso");
     } else {
-        $_SESSION['message'] = [
-            "type" => "error",
-            "description" => "Error al registrar el voto. Intenta nuevamente.",
-            "title" => "¡ERROR!"
-        ];
+        echo "Error al votar: " . $conexion->error;
     }
-    
-    header('Location: ../../views/portal/votar.php');
-    exit();
-    
-} else {
-    $_SESSION['message'] = [
-        "type" => "error",
-        "description" => "Solicitud inválida",
-        "title" => "¡ERROR!"
-    ];
-    header('Location: ../../views/portal/votar.php');
-    exit();
 }
+$conexion->close();
 ?>

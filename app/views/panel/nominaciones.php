@@ -1,102 +1,56 @@
-<?php
+<?php 
 session_start();
-// Ajusta la ruta según tu estructura de carpetas real si es necesario
-require_once '../../config/Constants.php';
-require_once '../../config/Conecct.php'; 
-
-// Verificar sesión
-if (!isset($_SESSION['is_logged']) || $_SESSION['id_rol'] != 1) {
-    header("Location: ../../index.php");
-    exit;
-}
-
-// Consulta con JOINS para traer los nombres en lugar de solo IDs
-$sql = "SELECT 
-            n.id_nominacion, 
-            n.fecha_nominacion,
-            c.nombre_categoria_nominacion,
-            a.pseudonimo_artista,
-            al.titulo_album
-        FROM nominaciones n
-        LEFT JOIN categorias_nominaciones c ON n.id_categoria_nominacion = c.id_categoria_nominacion
-        LEFT JOIN artistas a ON n.id_artista = a.id_artista
-        LEFT JOIN albumes al ON n.id_album = al.id_album
-        ORDER BY n.id_nominacion DESC";
-
-$result = $conexion->query($sql);
+require_once '../../config/Conecct.php';
+require_once '../../helpers/menu_lateral.php';
+// ... includes ...
+echo mostrar_menu_lateral('Nominaciones');
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Panel Administrativo - Nominaciones</title>
-    <?php require_once('../../helpers/header_panel.php'); // Asumo que tienes un header o incluye los css manuales ?>
-</head>
-<body class="hold-transition sidebar-mini layout-fixed">
-<div class="wrapper">
-    
-    <?php require_once('../../helpers/menu_lateral.php'); ?>
-
-    <div class="content-wrapper">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Gestión de Nominaciones</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <a href="nominacion_nueva.php" class="btn btn-primary float-sm-right">
-                            <i class="fas fa-plus"></i> Nueva Nominación
-                        </a>
-                    </div>
-                </div>
+<div class="content-wrapper">
+    <section class="content-header"><h1>Nominaciones Activas</h1></section>
+    <section class="content">
+        <div class="card">
+            <div class="card-header">
+                <a href="nominacion_nueva.php" class="btn btn-success">Nueva Nominación</a>
             </div>
-        </section>
-
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Listado de Nominados</h3>
-                            </div>
-                            <div class="card-body">
-                                <table id="tabla_nominaciones" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Categoría</th>
-                                            <th>Artista</th>
-                                            <th>Álbum (Opcional)</th>
-                                            <th>Fecha</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php while($row = $result->fetch_assoc()): ?>
-                                        <tr>
-                                            <td><?php echo $row['id_nominacion']; ?></td>
-                                            <td><?php echo $row['nombre_categoria_nominacion']; ?></td>
-                                            <td><?php echo $row['pseudonimo_artista'] ? $row['pseudonimo_artista'] : 'N/A'; ?></td>
-                                            <td><?php echo $row['titulo_album'] ? $row['titulo_album'] : 'N/A'; ?></td>
-                                            <td><?php echo $row['fecha_nominacion']; ?></td>
-                                            <td>
-                                                <a href="nominacion_detalles.php?id=<?php echo $row['id_nominacion']; ?>" class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a>
-                                                <a href="../../backend/panel/nominaciones/delete_nominacion.php?id=<?php echo $row['id_nominacion']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta nominación?');"><i class="fas fa-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                        <?php endwhile; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Categoría</th>
+                            <th>Nominado (Artista/Album)</th>
+                            <th>Votos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // JOIN para traer los nombres reales
+                        $sql = "SELECT n.*, c.nombre_categoria_nominacion, a.pseudonimo_artista, al.titulo_album 
+                                FROM nominaciones n
+                                LEFT JOIN categorias_nominaciones c ON n.id_categoria_nominacion = c.id_categoria_nominacion
+                                LEFT JOIN artistas a ON n.id_artista = a.id_artista
+                                LEFT JOIN albumes al ON n.id_album = al.id_album";
+                        
+                        $result = $conexion->query($sql);
+                        
+                        while($row = $result->fetch_assoc()) {
+                            // Determinar quién es el nominado
+                            $nominado = $row['pseudonimo_artista'] ? $row['pseudonimo_artista'] : $row['titulo_album'];
+                            
+                            echo "<tr>
+                                <td>{$row['nombre_categoria_nominacion']}</td>
+                                <td>{$nominado}</td>
+                                <td>{$row['contador_nominacion']}</td>
+                                <td>
+                                    <a href='nominacion_detalles.php?id={$row['id_nominacion']}' class='btn btn-info btn-sm'><i class='fas fa-edit'></i></a>
+                                    <a href='../../backend/panel/nominaciones/delete_nominacion.php?id={$row['id_nominacion']}' class='btn btn-danger btn-sm' onclick='return confirm(\"¿Borrar?\")'><i class='fas fa-trash'></i></a>
+                                </td>
+                            </tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
-        </section>
-    </div>
-    <?php require_once('../../helpers/footer_panel.php'); // O los scripts de cierre ?>
+        </div>
+    </section>
 </div>
-</body>
-</html>
