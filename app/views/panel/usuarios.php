@@ -31,23 +31,33 @@ $usuarios = $tabla_usuarios->readAllUsers();
     <link rel="icon" href="../../../recursos/img/system/mtv-logo.jpg" type="image/x-icon">
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="../../../recursos/recursos_panel/plugins/fontawesome-free/css/all.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../../../recursos/recursos_panel/css/adminlte.min.css">
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
-    <!-- Toastr -->
-    <link rel="stylesheet" href="../../../recursos/recursos_panel/plugins/toastr/toastr.min.css">
+<!-- Font Awesome -->
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <!-- DataTables -->
-    <link rel="stylesheet"
-        href="../../../recursos/recursos_panel/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet"
-        href="../../../recursos/recursos_panel/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet"
-        href="../../../recursos/recursos_panel/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+<!-- AdminLTE Theme -->
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+
+<!-- Toastr -->
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <!-- DataTables Bootstrap 4 -->
+<link rel="stylesheet"
+    href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+
+<!-- DataTables Responsive -->
+<link rel="stylesheet"
+    href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
+
+<!-- DataTables Buttons -->
+<link rel="stylesheet"
+    href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap4.min.css">
+
 
 </head>
 
@@ -276,26 +286,19 @@ $usuarios = $tabla_usuarios->readAllUsers();
     <!-- ./wrapper -->
 
     <!-- jQuery -->
-    <script src="../../../recursos/recursos_panel/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="../../../recursos/recursos_panel/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="../../../recursos/recursos_panel/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="../../../recursos/recursos_panel/js/demo.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Toastr -->
-    <script src="../../../recursos/recursos_panel/plugins/toastr/toastr.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- DataTables  & Plugins -->
-    <script src="../../../recursos/recursos_panel/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../../../recursos/recursos_panel/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script
-        src="../../../recursos/recursos_panel/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script
-        src="../../../recursos/recursos_panel/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="../../../recursos/recursos_panel/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../../../recursos/recursos_panel/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<!-- AdminLTE App -->
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+<!-- AdminLTE Demo (opcional, normalmente no se usa en producción) -->
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/demo.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <!-- JS VIEW -->
     <script src="../../../recursos/js/views/usuarios.js"></script>
