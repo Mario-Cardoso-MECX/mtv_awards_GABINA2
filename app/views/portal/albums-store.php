@@ -4,7 +4,7 @@ require_once '../../config/Conecct.php';
 $db = new Conecct();
 $conn = $db->conecct;
 
-// Obtener Álbumes
+// Obtener Álbumes Activos
 $sql = "SELECT a.*, ar.pseudonimo_artista, g.nombre_genero 
         FROM albumes a 
         LEFT JOIN artistas ar ON a.id_artista = ar.id_artista 
@@ -29,7 +29,7 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .close { color: white; opacity: 1; }
         .list-group-item { background-color: #222; border-color: #333; color: #ddd; }
         .classynav ul li.active a { color: #fbb710 !important; }
-        /* Estilo forzado para el reproductor */
+        /* Estilo del reproductor */
         audio { width: 100%; height: 32px; margin-top: 5px; outline: none; }
     </style>
 </head>
@@ -58,19 +58,13 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="login-register-btn mr-50">
                                         <?php if (isset($_SESSION["nickname"])): ?>
                                             <div class="dropdown">
-                                                <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown"><?= htmlspecialchars($_SESSION["nickname"]) ?></a>
+                                                <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown" style="color: white;"><?= htmlspecialchars($_SESSION["nickname"]) ?></a>
                                                 <div class="dropdown-menu">
-                                                    <?php 
-                                                    $rol = isset($_SESSION['rol']) ? intval($_SESSION['rol']) : 0;
-                                                    if ($rol == 128) { echo '<a class="dropdown-item text-dark" href="../panel/dashboard.php">Ir al Panel</a>'; } 
-                                                    elseif ($rol == 85) { echo '<a class="dropdown-item text-dark" href="../panel/dashboard_artista.php">Ir al Panel</a>'; }
-                                                    ?>
-                                                    <a class="dropdown-item text-dark" href="./miPerfil.php?id=<?= $_SESSION['id_usuario']; ?>">Mi perfil</a>
                                                     <a class="dropdown-item text-dark" href="../../backend/panel/liberate_user.php">Cerrar sesión</a>
                                                 </div>
                                             </div>
                                         <?php else: ?>
-                                            <a href="../../../index.php">Iniciar sesión</a>
+                                            <a href="../../../index.php" style="color: white;">Iniciar sesión</a>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -93,7 +87,6 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="row">
                 <?php foreach ($albumes as $alb): ?>
                     <?php 
-                        // Consultar canciones para este álbum
                         $stmt_c = $conn->prepare("SELECT * FROM canciones WHERE id_album = :id AND estatus_cancion = 1");
                         $stmt_c->bindParam(':id', $alb['id_album']);
                         $stmt_c->execute();
@@ -134,7 +127,7 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <ul class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
                                                     <?php foreach ($canciones as $track): ?>
                                                         <li class="list-group-item bg-dark border-secondary">
-                                                            <div class="d-flex justify-content-between mb-2">
+                                                            <div class="d-flex justify-content-between mb-1">
                                                                 <span><i class="fa fa-music"></i> <?= htmlspecialchars($track['nombre_cancion']) ?></span>
                                                                 <span class="badge badge-warning"><?= htmlspecialchars($track['duracion_cancion']) ?></span>
                                                             </div>
@@ -145,11 +138,11 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                                     Tu navegador no soporta el audio.
                                                                 </audio>
                                                             <?php else: ?>
-                                                                <?php if(!empty($track['url_cancion'])): ?>
-                                                                    <a href="<?= $track['url_cancion'] ?>" target="_blank" class="btn btn-sm btn-outline-primary btn-block">Abrir Enlace <i class="fa fa-external-link"></i></a>
-                                                                <?php else: ?>
-                                                                    <small class="text-muted">Sin audio disponible</small>
-                                                                <?php endif; ?>
+                                                                <small class="text-muted">Sin archivo MP3.</small>
+                                                            <?php endif; ?>
+
+                                                            <?php if (!empty($track['url_cancion'])): ?>
+                                                                <a href="<?= $track['url_cancion'] ?>" target="_blank" class="btn btn-sm btn-outline-light mt-1 btn-block">Enlace Externo</a>
                                                             <?php endif; ?>
                                                         </li>
                                                     <?php endforeach; ?>

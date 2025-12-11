@@ -23,10 +23,13 @@ $canciones = $stmt_c->fetchAll(PDO::FETCH_ASSOC);
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Detalles</title>
+    <title>Detalles Álbum</title>
     <link rel="icon" href="../../../recursos/img/system/mtv-logo.jpg">
     <link rel="stylesheet" href="../../../recursos/recursos_portal/style.css">
-    <style> .classynav ul li.active a { color: #fbb710 !important; } audio { width: 100%; height: 30px; } </style>
+    <style> 
+        .classynav ul li.active a { color: #fbb710 !important; } 
+        audio { width: 100%; height: 32px; margin-top: 5px; outline: none; }
+    </style>
 </head>
 <body>
     <header class="header-area">
@@ -34,7 +37,7 @@ $canciones = $stmt_c->fetchAll(PDO::FETCH_ASSOC);
             <div class="classy-nav-container breakpoint-off">
                 <div class="container">
                     <nav class="classy-navbar justify-content-between" id="oneMusicNav">
-                        <a href="index.php" class="nav-brand"><img src="../../../recursos/img/system/mtv-logo-blanco.png" width="50%" alt=""></a>
+                        <a href="./index.php" class="nav-brand"><img src="../../../recursos/img/system/mtv-logo-blanco.png" width="50%" alt=""></a>
                         <div class="classy-navbar-toggler"><span class="navbarToggler"><span></span><span></span><span></span></span></div>
                         <div class="classy-menu">
                             <div class="classycloseIcon"><div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div></div>
@@ -48,6 +51,20 @@ $canciones = $stmt_c->fetchAll(PDO::FETCH_ASSOC);
                                     <li><a href="./votar.php">Votar</a></li>
                                     <li><a href="./resultados.php">Resultados</a></li>
                                 </ul>
+                                <div class="login-register-cart-button d-flex align-items-center">
+                                    <div class="login-register-btn mr-50">
+                                        <?php if (isset($_SESSION["nickname"])): ?>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown" style="color: white;"><?= htmlspecialchars($_SESSION["nickname"]) ?></a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item text-dark" href="../../backend/panel/liberate_user.php">Cerrar sesión</a>
+                                                </div>
+                                            </div>
+                                        <?php else: ?>
+                                            <a href="../../../index.php" style="color: white;">Iniciar sesión</a>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </nav>
@@ -69,8 +86,12 @@ $canciones = $stmt_c->fetchAll(PDO::FETCH_ASSOC);
                         <h4>Canciones</h4>
                         <ul class="list-group">
                             <?php foreach ($canciones as $track): ?>
-                                <li class="list-group-item bg-dark text-white">
-                                    <?= htmlspecialchars($track['nombre_cancion']) ?>
+                                <li class="list-group-item bg-dark text-white border-secondary mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span><?= htmlspecialchars($track['nombre_cancion']) ?></span>
+                                        <span class="badge badge-warning"><?= htmlspecialchars($track['duracion_cancion']) ?></span>
+                                    </div>
+                                    
                                     <?php if (!empty($track['mp3_cancion'])): ?>
                                         <audio controls>
                                             <source src="../../../recursos/audio/<?= $track['mp3_cancion'] ?>" type="audio/mpeg">
