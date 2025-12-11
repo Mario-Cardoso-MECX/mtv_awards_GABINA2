@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $exten = strtolower(end($temp));
 
                 if ($exten !== "mp3") {
-                    $_SESSION['message'] = array("type" => "error", "description" => "Solo MP3.", "title" => "Error");
+                    $_SESSION['message'] = array("type" => "error", "description" => "Solo archivos MP3.", "title" => "Error");
                     header('Location: ../../../views/panel/cancion_nueva.php');
                     exit();
                 }
@@ -69,6 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "id_artista" => $id_artista,
                 "id_genero" => $id_genero,
                 "id_album" => $id_album,
+                "estatus_cancion" => 1 // [CORREGIDO] Habilita la canción automáticamente
             );
 
             if ($tabla_cancion->createCancion($data)) {
@@ -86,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
     } else {
-        $_SESSION['message'] = array("type" => "error", "description" => "Faltan datos.", "title" => "Error");
+        $_SESSION['message'] = array("type" => "error", "description" => "Faltan datos obligatorios.", "title" => "Error");
         header('Location: ../../../views/panel/cancion_nueva.php');
         exit();
     }

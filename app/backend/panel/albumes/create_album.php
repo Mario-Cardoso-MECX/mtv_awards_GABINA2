@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $descripcion = isset($_POST["descripcion_album"]) ? trim($_POST["descripcion_album"]) : null;
         $id_genero = intval($_POST["id_genero"]);
 
-        // LÓGICA PARA ASIGNAR ARTISTA (Mejora: Permite que Admin envíe ID)
+        // LÓGICA PARA ASIGNAR ARTISTA
         $id_artista = null;
         if (isset($_POST['id_artista']) && !empty($_POST['id_artista'])) {
             $id_artista = intval($_POST['id_artista']);
@@ -61,11 +61,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "descripcion_album" => $descripcion,
             "imagen_album" => ($file_name == null) ? "default.png" : $file_name,
             "id_artista" => $id_artista,
-            "id_genero" => $id_genero
+            "id_genero" => $id_genero,
+            "estatus_album" => 1 // [CORREGIDO] Importante para que sea visible
         );
 
         if ($tabla_album->createAlbum($data)) {
-            $_SESSION['message'] = array("type" => "success", "description" => "Álbum registrado.", "title" => "Éxito");
+            $_SESSION['message'] = array("type" => "success", "description" => "Álbum registrado correctamente.", "title" => "Éxito");
             header('Location: ../../../views/panel/albumes.php');
             exit();
         } else {

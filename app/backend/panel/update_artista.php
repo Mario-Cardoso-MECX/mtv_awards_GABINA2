@@ -23,13 +23,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $biografia = !empty($_POST["biografia_artista"]) ? $_POST["biografia_artista"] : null;
         $id_usuario = $_POST["id_usuario"];
         $id_genero = $_POST["id_genero"];
+        
+        // [CORREGIDO] Capturar estatus si se envía, sino mantener el actual (o por defecto)
+        $estatus = isset($_POST["estatus_artista"]) ? intval($_POST["estatus_artista"]) : 1;
 
         $data = array(
             "pseudonimo_artista" => $pseudonimo,
             "nacionalidad_artista" => $nacionalidad,
             "biografia_artista" => $biografia,
             "id_usuario" => $id_usuario,
-            "id_genero" => $id_genero
+            "id_genero" => $id_genero,
+            "estatus_artista" => $estatus // Agregado al array de actualización
         );
 
         // Sentencia de actualización
@@ -53,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $_SESSION['message'] = array(
             "type" => "error",
-            "description" => "Ocurrió un error al procesar la información. Por favor, completa todos los campos requeridos.",
+            "description" => "Ocurrió un error al procesar la información. Faltan campos.",
             "title" => "¡ERROR!"
         );
         header('Location: ../../views/panel/artista_detalles.php?id=' . $_POST["id_artista"]);

@@ -8,7 +8,7 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
-// VALIDACIÓN DE SEGURIDAD EXTRA: Solo rol 4 (Audiencia) puede votar
+// VALIDACIÓN DE SEGURIDAD: Solo rol 4 (Audiencia) puede votar
 $rol_usuario = isset($_SESSION['rol']) ? intval($_SESSION['rol']) : 0;
 if ($rol_usuario !== 4) {
     header("Location: ../../views/portal/votar.php?error=permisos");
@@ -27,7 +27,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     try {
-        // 1. Obtener datos de la nominación
+        // [CORREGIDO] 1. Validar si el usuario YA VOTÓ en esta nominación
+        $check_sql = "SELECT COUNT(*) as total FROM votaciones WHERE id_nominacion = :nom AND id_usuario = :user";
+        $check_stmt = $conexion->prepare($check_sql);
+        $check_stmt->bindParam(':nom', $id_nominacion);
+        $check_stmt->bindParam(':user', $id_usuario);
+        $check_stmt->execute();
+        $exists = $check_stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($exists['total'] > 0) {
+            // Si ya votó, regresarlo con mensaje de error
+            header("Location: ../../views/portal/votar.php?msg=ya_votaste");
+            exit();
+        }
+
+        // 2. Obtener datos de la nominación
         $stmt_info = $conexion->prepare("SELECT id_artista, id_album FROM nominaciones WHERE id_nominacion = :id");
         $stmt_info->bindParam(':id', $id_nominacion);
         $stmt_info->execute();
@@ -37,10 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $id_art = $data_nom['id_artista'];
             $id_alb = $data_nom['id_album'];
 
-            // 2. Registrar el voto (SIN fecha_votacion si no la creaste, CON si ya la tienes)
-            // Si ya ejecutaste el SQL que te di para crear la columna, usa esta línea:
+            // 3. Registrar el voto
+            // IMPORTANTE: Si la columna 'fecha_votacion' tiene DEFAULT CURRENT_TIMESTAMP en tu BD, no es necesario pasarla.
+            // Si no, usa NOW(). Asumiendo que usaste el SQL anterior, aquí lo dejo explícito.
             $sql_voto = "INSERT INTO votaciones (fecha_votacion, id_nominacion, id_usuario, id_artista, id_album) VALUES (NOW(), :nom, :user, :art, :alb)";
-            // Si NO ejecutaste el SQL y la columna no existe, borra "fecha_votacion" y "NOW(),"
             
             $stmt_voto = $conexion->prepare($sql_voto);
             $stmt_voto->bindParam(':nom', $id_nominacion);
@@ -49,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt_voto->bindParam(':alb', $id_alb);
 
             if ($stmt_voto->execute()) {
-                // 3. ACTUALIZAR EL CONTADOR
+                // 4. ACTUALIZAR EL CONTADOR
                 $sql_update = "UPDATE nominaciones SET contador_nominacion = contador_nominacion + 1 WHERE id_nominacion = :nom";
                 $stmt_upd = $conexion->prepare($sql_update);
                 $stmt_upd->bindParam(':nom', $id_nominacion);
