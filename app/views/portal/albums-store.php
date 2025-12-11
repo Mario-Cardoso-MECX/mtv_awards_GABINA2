@@ -4,7 +4,7 @@ require_once '../../config/Conecct.php';
 $db = new Conecct();
 $conn = $db->conecct;
 
-// Obtener Álbumes Activos
+// Obtener Álbumes
 $sql = "SELECT a.*, ar.pseudonimo_artista, g.nombre_genero 
         FROM albumes a 
         LEFT JOIN artistas ar ON a.id_artista = ar.id_artista 
@@ -29,6 +29,8 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .close { color: white; opacity: 1; }
         .list-group-item { background-color: #222; border-color: #333; color: #ddd; }
         .classynav ul li.active a { color: #fbb710 !important; }
+        /* Estilo forzado para el reproductor */
+        audio { width: 100%; height: 32px; margin-top: 5px; outline: none; }
     </style>
 </head>
 
@@ -91,6 +93,7 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="row">
                 <?php foreach ($albumes as $alb): ?>
                     <?php 
+                        // Consultar canciones para este álbum
                         $stmt_c = $conn->prepare("SELECT * FROM canciones WHERE id_album = :id AND estatus_cancion = 1");
                         $stmt_c->bindParam(':id', $alb['id_album']);
                         $stmt_c->execute();
@@ -130,18 +133,23 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <?php if (count($canciones) > 0): ?>
                                                 <ul class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
                                                     <?php foreach ($canciones as $track): ?>
-                                                        <li class="list-group-item">
+                                                        <li class="list-group-item bg-dark border-secondary">
                                                             <div class="d-flex justify-content-between mb-2">
-                                                                <span><?= htmlspecialchars($track['nombre_cancion']) ?></span>
+                                                                <span><i class="fa fa-music"></i> <?= htmlspecialchars($track['nombre_cancion']) ?></span>
                                                                 <span class="badge badge-warning"><?= htmlspecialchars($track['duracion_cancion']) ?></span>
                                                             </div>
+                                                            
                                                             <?php if (!empty($track['mp3_cancion'])): ?>
-                                                                <audio controls style="width: 100%; height: 30px;">
+                                                                <audio controls>
                                                                     <source src="../../../recursos/audio/<?= $track['mp3_cancion'] ?>" type="audio/mpeg">
-                                                                    Tu navegador no soporta el elemento de audio.
+                                                                    Tu navegador no soporta el audio.
                                                                 </audio>
-                                                            <?php elseif (!empty($track['url_cancion'])): ?>
-                                                                <a href="<?= $track['url_cancion'] ?>" target="_blank" class="btn btn-sm btn-outline-primary btn-block">Escuchar <i class="fa fa-external-link"></i></a>
+                                                            <?php else: ?>
+                                                                <?php if(!empty($track['url_cancion'])): ?>
+                                                                    <a href="<?= $track['url_cancion'] ?>" target="_blank" class="btn btn-sm btn-outline-primary btn-block">Abrir Enlace <i class="fa fa-external-link"></i></a>
+                                                                <?php else: ?>
+                                                                    <small class="text-muted">Sin audio disponible</small>
+                                                                <?php endif; ?>
                                                             <?php endif; ?>
                                                         </li>
                                                     <?php endforeach; ?>
@@ -169,6 +177,7 @@ $albumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <ul>
                             <li><a href="./index.php">Inicio</a></li>
                             <li><a href="./albums-store.php">Géneros</a></li>
+                            <li><a href="./nominaciones.php">Nominaciones</a></li>
                             <li><a href="./votar.php">Votar</a></li>
                         </ul>
                     </div>

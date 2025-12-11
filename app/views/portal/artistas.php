@@ -37,51 +37,45 @@ $artistas = $tabla_artista->readAllArtists();
     </div>
 
     <header class="header-area">
-        <div class="oneMusic-main-menu">
-            <div class="classy-nav-container breakpoint-off">
-                <div class="container">
-                    <nav class="classy-navbar justify-content-between" id="oneMusicNav">
-                        <a href="./index.php" class="nav-brand"><img src="../../../recursos/img/system/mtv-logo-blanco.png" width="50%" alt=""></a>
-                        <div class="classy-navbar-toggler"><span class="navbarToggler"><span></span><span></span><span></span></span></div>
-                        <div class="classy-menu">
-                            <div class="classycloseIcon"><div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div></div>
-                            <div class="classynav">
-                                <ul>
-                                    <li><a href="./index.php">Inicio</a></li>
-                                    <li><a href="./event.php">Eventos</a></li>
-                                    <li><a href="./albums-store.php">Albums</a></li>
-                                    <li class="active"><a href="./artistas.php">Artistas</a></li> <li><a href="./votar.php">Votar</a></li>
-                                    <li><a href="./resultados.php">Resultados</a></li>
-                                </ul>
-                                <div class="login-register-cart-button d-flex align-items-center">
-                                    <div class="login-register-btn mr-50">
-                                        <?php if (isset($_SESSION["nickname"])): ?>
-                                            <div class="dropdown">
-                                                <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <?= htmlspecialchars($_SESSION["nickname"]) ?>
-                                                </a>
-                                                <div class="dropdown-menu" aria-labelledby="userDropdown">
-                                                    <?php 
-                                                    $rol = isset($_SESSION['rol']) ? intval($_SESSION['rol']) : 0;
-                                                    if ($rol == 128) { echo '<a class="dropdown-item text-dark" href="../panel/dashboard.php">Ir al Panel</a>'; } 
-                                                    elseif ($rol == 85) { echo '<a class="dropdown-item text-dark" href="../panel/dashboard_artista.php">Ir al Panel</a>'; }
-                                                    ?>
-                                                    <a class="dropdown-item text-dark" href="./miPerfil.php?id=<?php echo $_SESSION['id_usuario']; ?>">Mi perfil</a>
-                                                    <a class="dropdown-item text-dark" href="../../backend/panel/liberate_user.php">Cerrar sesión</a>
-                                                </div>
+    <div class="oneMusic-main-menu">
+        <div class="classy-nav-container breakpoint-off">
+            <div class="container">
+                <nav class="classy-navbar justify-content-between" id="oneMusicNav">
+                    <a href="./index.php" class="nav-brand"><img src="../../../recursos/img/system/mtv-logo-blanco.png" width="50%" alt=""></a>
+                    <div class="classy-navbar-toggler"><span class="navbarToggler"><span></span><span></span><span></span></span></div>
+                    <div class="classy-menu">
+                        <div class="classycloseIcon"><div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div></div>
+                        <div class="classynav">
+                            <ul>
+                                <li><a href="./index.php">Inicio</a></li>
+                                <li><a href="./event.php">Eventos</a></li>
+                                <li><a href="./albums-store.php">Géneros</a></li>
+                                <li class="active"><a href="./artistas.php">Artistas</a></li>
+                                <li><a href="./nominaciones.php">Nominaciones</a></li>
+                                <li><a href="./votar.php">Votar</a></li>
+                                <li><a href="./resultados.php">Resultados</a></li>
+                            </ul>
+                            <div class="login-register-cart-button d-flex align-items-center">
+                                <div class="login-register-btn mr-50">
+                                    <?php if (isset($_SESSION["nickname"])): ?>
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-toggle" id="userDropdown" data-toggle="dropdown" style="color: white;"><?= htmlspecialchars($_SESSION["nickname"]) ?></a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item text-dark" href="../../backend/panel/liberate_user.php">Cerrar sesión</a>
                                             </div>
-                                        <?php else: ?>
-                                            <a href="../../../index.php">Iniciar sesión / Registrarse</a>
-                                        <?php endif; ?>
-                                    </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <a href="../../../index.php" style="color: white;">Iniciar sesión</a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
-                    </nav>
-                </div>
+                    </div>
+                </nav>
             </div>
         </div>
-    </header>
+    </div>
+</header>
 
     <section class="breadcumb-area bg-img bg-overlay" style="background-image: url(../../../recursos/recursos_portal/img/bg-img/breadcumb3.jpg);">
         <div class="bradcumbContent">
