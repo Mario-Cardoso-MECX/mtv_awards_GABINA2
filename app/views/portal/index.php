@@ -55,8 +55,7 @@ $usuarios = $tabla_usuarios->readAllUsers();
                                 <ul>
                                     <li class="active"><a href="./index.php">Inicio</a></li>
                                     <li><a href="./event.php">Eventos</a></li>
-                                    <li><a href="./albums-store.php">Generos</a></li>
-                                    <li><a href="./artistas.php">Artistas</a></li>
+                                    <li><a href="./albums-store.php">Albums</a></li> <li><a href="./artistas.php">Artistas</a></li>
                                     <li><a href="./votar.php">Votar</a></li>
                                     <li><a href="./resultados.php">Resultados</a></li>
                                 </ul>
@@ -74,7 +73,7 @@ $usuarios = $tabla_usuarios->readAllUsers();
                                                     if ($rol == 128) { echo '<a class="dropdown-item text-dark" href="../panel/dashboard.php">Ir al Panel</a>'; } 
                                                     elseif ($rol == 85) { echo '<a class="dropdown-item text-dark" href="../panel/dashboard_artista.php">Ir al Panel</a>'; }
                                                     ?>
-                                                    <a class="dropdown-item text-dark" href="./miPerfil.php?id=<?= $_SESSION['id_usuario']; ?>">Mi perfil</a>
+                                                    <a class="dropdown-item text-dark" href="./miPerfil.php?id=<?php echo $_SESSION['id_usuario']; ?>">Mi perfil</a>
                                                     <a class="dropdown-item text-dark" href="../../backend/panel/liberate_user.php">Cerrar sesión</a>
                                                 </div>
                                             </div>
@@ -237,8 +236,7 @@ $usuarios = $tabla_usuarios->readAllUsers();
                         <ul>
                             <li><a href="./index.php">Inicio</a></li>
                             <li><a href="./event.php">Eventos</a></li>
-                            <li><a href="./albums-store.php">Generos</a></li>
-                            <li><a href="./artistas.php">Artistas</a></li>
+                            <li><a href="./albums-store.php">Albums</a></li> <li><a href="./artistas.php">Artistas</a></li>
                             <li><a href="./votar.php">Votar</a></li>
                             <li><a href="./resultados.php">Resultados</a></li>
                         </ul>

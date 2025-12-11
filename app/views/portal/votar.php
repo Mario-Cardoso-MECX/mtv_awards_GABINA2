@@ -54,7 +54,7 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
                                 <ul>
                                     <li><a href="./index.php">Inicio</a></li>
                                     <li><a href="./event.php">Eventos</a></li>
-                                    <li><a href="./albums-store.php">Generos</a></li>
+                                    <li><a href="./albums-store.php">Albums</a></li>
                                     <li><a href="./artistas.php">Artistas</a></li>
                                     <li class="active"><a href="./votar.php">Votar</a></li>
                                     <li><a href="./resultados.php">Resultados</a></li>
@@ -241,7 +241,7 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
                         <ul>
                             <li><a href="./index.php">Inicio</a></li>
                             <li><a href="./event.php">Eventos</a></li>
-                            <li><a href="./albums-store.php">Generos</a></li>
+                            <li><a href="./albums-store.php">Albums</a></li>
                             <li><a href="./artistas.php">Artistas</a></li>
                             <li><a href="./votar.php">Votar</a></li>
                             <li><a href="./resultados.php">Resultados</a></li>

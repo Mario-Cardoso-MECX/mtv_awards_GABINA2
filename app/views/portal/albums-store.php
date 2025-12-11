@@ -190,8 +190,7 @@ $albums = $tabla_album->readAllAlbumsG();
                         <ul>
                             <li><a href="./index.php">Inicio</a></li>
                             <li><a href="./event.php">Eventos</a></li>
-                            <li><a href="./albums-store.php">Albums</a></li>
-                            <li><a href="./artistas.php">Artistas</a></li>
+                            <li><a href="./albums-store.php">Albums</a></li> <li><a href="./artistas.php">Artistas</a></li>
                             <li><a href="./votar.php">Votar</a></li>
                             <li><a href="./resultados.php">Resultados</a></li>
                         </ul>

@@ -1,9 +1,7 @@
 <?php
 session_start();
-// Opcional: Si quieres que sea público, comenta estas líneas. Si es privado, déjalas.
-if (!isset($_SESSION["is_logged"]) || $_SESSION["is_logged"] == false) {
+if (!isset($_SESSION["is_logged"]) || isset($_SESSION["is_logged"]) == false) {
     header("location: ../../../index.php?error=No has iniciado sesión&type=warning");
-    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -11,20 +9,16 @@ if (!isset($_SESSION["is_logged"]) || $_SESSION["is_logged"] == false) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>MTV | Eventos</title>
+    <title>MTV | awards</title>
     <link rel="icon" href="../../../recursos/img/system/mtv-logo.jpg">
     <link rel="stylesheet" href="../../../recursos/recursos_portal/style.css">
     <style>
         .classynav ul li.active a { color: #fbb710 !important; }
-        
         /* Estilos del Modal */
         .modal-content { background-color: #1a1a1a; color: white; border: 1px solid #333; }
-        .modal-header { border-bottom: 1px solid #333; padding: 1rem; }
-        .modal-footer { border-top: 1px solid #333; padding: 0.75rem; }
+        .modal-header { border-bottom: 1px solid #333; }
+        .modal-footer { border-top: 1px solid #333; }
         .close { color: white; text-shadow: none; opacity: 1; }
-        
-        /* Modal compacto */
-        .modal-dialog-compact { max-width: 400px; margin: 1.75rem auto; }
     </style>
 </head>
 
@@ -45,8 +39,8 @@ if (!isset($_SESSION["is_logged"]) || $_SESSION["is_logged"] == false) {
                             <div class="classynav">
                                 <ul>
                                     <li><a href="./index.php">Inicio</a></li>
-                                    <li class="active"><a href="./event.php">Eventos</a></li> <li><a href="./albums-store.php">Generos</a></li>
-                                    <li><a href="./artistas.php">Artistas</a></li>
+                                    <li class="active"><a href="./event.php">Eventos</a></li>
+                                    <li><a href="./albums-store.php">Albums</a></li> <li><a href="./artistas.php">Artistas</a></li>
                                     <li><a href="./votar.php">Votar</a></li>
                                     <li><a href="./resultados.php">Resultados</a></li>
                                 </ul>
@@ -91,17 +85,13 @@ if (!isset($_SESSION["is_logged"]) || $_SESSION["is_logged"] == false) {
         <div class="container">
             <div class="row">
                 <?php 
-                // Array de eventos simulados con ID y DESCRIPCIÓN para el modal
                 $eventos = [
                     ["id" => 1, "titulo" => "Dj en Ibiza", "lugar" => "Space Ibiza", "fecha" => "Dec 4, 2025", "img" => "e1.jpg", "desc" => "La fiesta electrónica más grande del año llega a Ibiza. Prepárate para 12 horas de música ininterrumpida con los mejores DJs del mundo."],
-                    ["id" => 2, "titulo" => "Festival de Rock", "lugar" => "Foro Sol", "fecha" => "Jan 15, 2026", "img" => "e2.jpg", "desc" => "Las bandas de rock más legendarias se reúnen en un solo escenario. Un evento imperdible para los amantes de las guitarras y la energía en vivo."],
-                    ["id" => 3, "titulo" => "Noche de Jazz", "lugar" => "Blue Note", "fecha" => "Feb 10, 2026", "img" => "e3.jpg", "desc" => "Una velada íntima y sofisticada con los exponentes más destacados del Jazz contemporáneo. Cena, bebida y la mejor música."],
-                    ["id" => 4, "titulo" => "Electro Fest", "lugar" => "Miami Beach", "fecha" => "Mar 22, 2026", "img" => "e4.jpg", "desc" => "Sol, playa y beats electrónicos. El festival que da la bienvenida a la primavera con una producción visual alucinante."],
-                    ["id" => 5, "titulo" => "Pop World Tour", "lugar" => "Wembley", "fecha" => "Apr 05, 2026", "img" => "e5.jpg", "desc" => "El ícono del pop mundial llega a Londres para presentar su nuevo álbum en un espectáculo lleno de luces, baile y éxitos."],
-                    ["id" => 6, "titulo" => "Indie Sessions", "lugar" => "The Roxy", "fecha" => "May 12, 2026", "img" => "e6.jpg", "desc" => "Descubre las bandas emergentes que están cambiando la escena musical. Un ambiente underground para verdaderos conocedores."],
-                    ["id" => 7, "titulo" => "Reggaeton Beach", "lugar" => "Cancún", "fecha" => "Jun 18, 2026", "img" => "e7.jpg", "desc" => "El perreo intenso llega al caribe mexicano. Los artistas urbanos del momento en un escenario frente al mar."],
-                    ["id" => 8, "titulo" => "Classic Night", "lugar" => "Opera House", "fecha" => "Jul 25, 2026", "img" => "e8.jpg", "desc" => "Una gala especial con orquesta sinfónica interpretando los grandes clásicos de la música, desde Beethoven hasta bandas sonoras de cine."],
-                    ["id" => 9, "titulo" => "Summer Vibes", "lugar" => "California", "fecha" => "Aug 30, 2026", "img" => "e9.jpg", "desc" => "Cierra el verano con el festival más colorido y vibrante de la costa oeste. Música, arte y buena vibra."],
+                    ["id" => 2, "titulo" => "Festival de Rock", "lugar" => "Foro Sol", "fecha" => "Jan 15, 2026", "img" => "e2.jpg", "desc" => "Las bandas de rock más legendarias se reúnen en un solo escenario."],
+                    ["id" => 3, "titulo" => "Noche de Jazz", "lugar" => "Blue Note", "fecha" => "Feb 10, 2026", "img" => "e3.jpg", "desc" => "Una velada íntima y sofisticada con los exponentes más destacados del Jazz contemporáneo."],
+                    ["id" => 4, "titulo" => "Electro Fest", "lugar" => "Miami Beach", "fecha" => "Mar 22, 2026", "img" => "e4.jpg", "desc" => "Sol, playa y beats electrónicos. El festival que da la bienvenida a la primavera."],
+                    ["id" => 5, "titulo" => "Pop World Tour", "lugar" => "Wembley", "fecha" => "Apr 05, 2026", "img" => "e5.jpg", "desc" => "El ícono del pop mundial llega a Londres para presentar su nuevo álbum."],
+                    ["id" => 6, "titulo" => "Indie Sessions", "lugar" => "The Roxy", "fecha" => "May 12, 2026", "img" => "e6.jpg", "desc" => "Descubre las bandas emergentes que están cambiando la escena musical."],
                 ];
                 
                 foreach ($eventos as $evento): 
@@ -125,7 +115,7 @@ if (!isset($_SESSION["is_logged"]) || $_SESSION["is_logged"] == false) {
                 </div>
 
                 <div class="modal fade" id="modalEvento<?= $evento['id'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-compact" role="document">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="tituloEvento<?= $evento['id'] ?>"><?= $evento['titulo'] ?></h5>
@@ -133,13 +123,11 @@ if (!isset($_SESSION["is_logged"]) || $_SESSION["is_logged"] == false) {
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body text-center p-3">
-                                <img src="../../../recursos/recursos_portal/img/bg-img/<?= $evento['img'] ?>" class="img-fluid rounded mb-3 shadow" style="max-height: 200px; width: auto; display: block; margin: 0 auto;" alt="">
-                                <p class="mb-1"><strong>Lugar:</strong> <?= $evento['lugar'] ?></p>
-                                <p class="mb-2"><strong>Fecha:</strong> <?= $evento['fecha'] ?></p>
-                                <div class="bg-dark p-2 rounded text-justify small mt-3">
-                                    <p class="mb-0"><?= $evento['desc'] ?></p>
-                                </div>
+                            <div class="modal-body text-center">
+                                <img src="../../../recursos/recursos_portal/img/bg-img/<?= $evento['img'] ?>" class="img-fluid rounded mb-3" style="max-height: 200px; width: auto; display: block; margin: 0 auto;" alt="">
+                                <p><strong>Lugar:</strong> <?= $evento['lugar'] ?></p>
+                                <p><strong>Fecha:</strong> <?= $evento['fecha'] ?></p>
+                                <p class="mt-3"><?= $evento['desc'] ?></p>
                             </div>
                             <div class="modal-footer justify-content-center">
                                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cerrar</button>
@@ -164,8 +152,7 @@ if (!isset($_SESSION["is_logged"]) || $_SESSION["is_logged"] == false) {
                         <ul>
                             <li><a href="./index.php">Inicio</a></li>
                             <li><a href="./event.php">Eventos</a></li>
-                            <li><a href="./albums-store.php">Generos</a></li>
-                            <li><a href="./artistas.php">Artistas</a></li>
+                            <li><a href="./albums-store.php">Albums</a></li> <li><a href="./artistas.php">Artistas</a></li>
                             <li><a href="./votar.php">Votar</a></li>
                             <li><a href="./resultados.php">Resultados</a></li>
                         </ul>
