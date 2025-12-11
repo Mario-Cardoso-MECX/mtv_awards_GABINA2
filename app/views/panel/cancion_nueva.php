@@ -1,9 +1,10 @@
 <?php
 // Importar librerías
-require_once '../../helpers/menu_lateral_artista.php';
+require_once '../../helpers/menu_lateral.php';
 require_once '../../helpers/funciones_globales.php';
 require_once '../../models/Tabla_albumes.php';
 require_once '../../models/Tabla_generos.php';
+require_once '../../models/Tabla_artista.php';
 
 // Reinstancias la variable
 session_start();
@@ -16,50 +17,39 @@ if (!isset($_SESSION["is_logged"]) || ($_SESSION["is_logged"] == false)) {
 // Instanciar los modelos
 $tabla_albumes = new Tabla_albumes();
 $tabla_generos = new Tabla_generos();
+$tabla_artistas = new Tabla_artista();
 
-// Leer álbumes y géneros
+// Leer datos para los selectores
 $albumes = $tabla_albumes->readAllAlbumsG();
 $generos = $tabla_generos->readAllGeneros();
+$artistas = $tabla_artistas->readAllArtists();
 ?>
 
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MTV | awards </title>
 
-    <!-- Icon -->
     <link rel="icon" href="../../../recursos/img/system/mtv-logo.jpg" type="image/x-icon">
 
-    <!-- Google Font: Source Sans Pro -->
-<link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
-<!-- Font Awesome -->
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-<!-- AdminLTE Theme -->
-<link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-
-<!-- Toastr -->
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="./dashboard_artista.php" class="nav-link">Inicio</a>
+                    <a href="./dashboard.php" class="nav-link">Inicio</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="../../backend/panel/liberate_user.php" class="nav-link">Cerrar Sesión</a>
@@ -67,7 +57,6 @@ $generos = $tabla_generos->readAllGeneros();
             </ul>
         </nav>
 
-        <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="../../index3.html" class="brand-link">
                 <img src="../../../recursos/img/system/mtv-logo.jpg" alt="AdminLTE Logo" class="brand-image elevation-3"
@@ -93,7 +82,6 @@ $generos = $tabla_generos->readAllGeneros();
             </div>
         </aside>
 
-        <!-- Content Wrapper -->
         <div class="content-wrapper">
             <?php
             $breadcrumb = array(
@@ -109,7 +97,6 @@ $generos = $tabla_generos->readAllGeneros();
             echo mostrar_breadcrumb_art('Canción Nueva', $breadcrumb);
             ?>
 
-            <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
                     <div class="row">
@@ -119,11 +106,10 @@ $generos = $tabla_generos->readAllGeneros();
                                     <h3 class="card-title">Formulario de Canción Nueva</h3>
                                 </div>
                                 <form id="form-cancion" action="../../backend/panel/canciones/create_cancion.php"
-                                    method="post" enctype="multipart/form-data">
+                                    method="post" enctype="multipart/form-data" onsubmit="prepararDuracion()">
                                     <div class="card-body">
+                                        
                                         <div class="row">
-                                            <input type="hidden" name="id_artista"
-                                                value="<?= $_SESSION['id_usuario'] ?>">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="nombre_cancion">Nombre de la Canción</label>
@@ -131,6 +117,7 @@ $generos = $tabla_generos->readAllGeneros();
                                                         id="nombre_cancion" placeholder="Nombre de la Canción" required>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="fecha_lanzamiento_cancion">Fecha de Lanzamiento</label>
@@ -138,16 +125,44 @@ $generos = $tabla_generos->readAllGeneros();
                                                         class="form-control" id="fecha_lanzamiento_cancion" required>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="duracion_cancion">Duración (MM:SS)</label>
-                                                    <input type="time" name="duracion_cancion" class="form-control"
-                                                        id="duracion_cancion" required>
+                                                    <label>Duración (Hrs : Min : Seg)</label>
+                                                    <div class="row">
+                                                        <div class="col-4">
+                                                            <input type="number" class="form-control" id="time_h" placeholder="00" min="0" max="23" value="0">
+                                                            <small class="text-center d-block">Hrs</small>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <input type="number" class="form-control" id="time_m" placeholder="00" min="0" max="59" required>
+                                                            <small class="text-center d-block">Min</small>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <input type="number" class="form-control" id="time_s" placeholder="00" min="0" max="59" required>
+                                                            <small class="text-center d-block">Seg</small>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" name="duracion_cancion" id="duracion_cancion">
                                                 </div>
-
                                             </div>
                                         </div>
+
                                         <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="id_artista">Artista</label>
+                                                    <select class="form-control" name="id_artista" id="id_artista" required>
+                                                        <option value="">Seleccionar Artista</option>
+                                                        <?php foreach ($artistas as $art): ?>
+                                                            <option value="<?= $art->id_artista ?>">
+                                                                <?= $art->pseudonimo_artista ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="id_album">Álbum</label>
@@ -161,11 +176,11 @@ $generos = $tabla_generos->readAllGeneros();
                                                     </select>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="id_genero">Género</label>
-                                                    <select class="form-control" name="id_genero" id="id_genero"
-                                                        required>
+                                                    <select class="form-control" name="id_genero" id="id_genero" required>
                                                         <option value="">Seleccionar un género</option>
                                                         <?php foreach ($generos as $genero): ?>
                                                             <option value="<?= $genero->id_genero ?>">
@@ -176,20 +191,30 @@ $generos = $tabla_generos->readAllGeneros();
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="mp3_cancion">Archivo MP3</label>
-                                            <input type="file" name="mp3_cancion" class="form-control" id="mp3_cancion">
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="mp3_cancion">Archivo MP3</label>
+                                                    <input type="file" name="mp3_cancion" class="form-control" id="mp3_cancion">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="url_cancion">URL de la Canción (Opcional)</label>
+                                                    <input type="text" name="url_cancion" class="form-control" id="url_cancion"
+                                                        placeholder="URL de Streaming">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="url_video_cancion">URL del Video (Opcional)</label>
+                                                    <input type="text" name="url_video_cancion" class="form-control"
+                                                        id="url_video_cancion" placeholder="Link de YouTube">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="url_cancion">URL de la Canción</label>
-                                            <input type="text" name="url_cancion" class="form-control" id="url_cancion"
-                                                placeholder="URL de la Canción">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="url_video_cancion">URL del Video</label>
-                                            <input type="text" name="url_video_cancion" class="form-control"
-                                                id="url_video_cancion" placeholder="URL del Video">
-                                        </div>
+
                                     </div>
                                     <div class="card-footer">
                                         <button type="submit" class="btn btn-info">Registrar</button>
@@ -207,26 +232,31 @@ $generos = $tabla_generos->readAllGeneros();
             <div class="float-right d-none d-sm-block">
                 <b>Version</b> 3.2.0
             </div>
-            <strong>Copyright &copy;</strong>
+            <strong>Copyright &copy; 2025.</strong> All rights reserved.
         </footer>
     </div>
 
-    <!-- Scripts -->
-    <!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Bootstrap 4 -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- AdminLTE App -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-
-<!-- AdminLTE Demo (opcional, normalmente no se usa en producción) -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/demo.js"></script>
-
-<!-- Toastr -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="../../../recursos/recursos_panel/plugins/jquery/jquery.min.js"></script>
+    <script src="../../../recursos/recursos_panel/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../recursos/recursos_panel/js/adminlte.min.js"></script>
+    <script src="../../../recursos/recursos_panel/plugins/toastr/toastr.min.js"></script>
+    
     <script>
+        function prepararDuracion() {
+            // Obtener valores
+            let h = document.getElementById('time_h').value || "00";
+            let m = document.getElementById('time_m').value || "00";
+            let s = document.getElementById('time_s').value || "00";
+
+            // Asegurar dos dígitos (0 -> 00, 5 -> 05)
+            h = h.toString().padStart(2, '0');
+            m = m.toString().padStart(2, '0');
+            s = s.toString().padStart(2, '0');
+
+            // Unir y asignar al campo oculto
+            document.getElementById('duracion_cancion').value = `${h}:${m}:${s}`;
+        }
+
         document.addEventListener("DOMContentLoaded", function (event) {
             <?php
             if (isset($_SESSION['message'])) {
