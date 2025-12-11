@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 11-12-2025 a las 04:37:04
+-- Tiempo de generación: 11-12-2025 a las 08:23:01
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.3.14
 
@@ -144,6 +144,7 @@ INSERT INTO `canciones` (`estatus_cancion`, `id_acancion`, `nombre_cancion`, `fe
 DROP TABLE IF EXISTS `categorias_nominaciones`;
 CREATE TABLE IF NOT EXISTS `categorias_nominaciones` (
   `id_categoria_nominacion` int NOT NULL AUTO_INCREMENT,
+  `tipo_categoria_nominacion` tinyint NOT NULL DEFAULT '1' COMMENT '1: Artista, 2: Album, 3: Cancion',
   `estatus_categoria_nominacion` tinyint(1) DEFAULT '1',
   `fecha_categoria_nominacion` date DEFAULT (curdate()),
   `nombre_categoria_nominacion` varchar(120) COLLATE utf8mb4_general_ci NOT NULL,
@@ -156,12 +157,12 @@ CREATE TABLE IF NOT EXISTS `categorias_nominaciones` (
 -- Volcado de datos para la tabla `categorias_nominaciones`
 --
 
-INSERT INTO `categorias_nominaciones` (`id_categoria_nominacion`, `estatus_categoria_nominacion`, `fecha_categoria_nominacion`, `nombre_categoria_nominacion`, `descripcion_categoria_nominacion`, `contador_nominacion`) VALUES
-(1, 1, '2025-12-10', 'Álbum del Año', 'Mejor álbum del año', 0),
-(2, 1, '2025-12-10', 'Canción del Año', 'Mejor canción del año', 0),
-(3, 1, '2025-12-10', 'Artista Revelación', 'Artista nuevo con mayor impacto', 0),
-(4, 1, '2025-12-10', 'Mejor Colaboración', 'Mejor colaboración entre artistas', 0),
-(5, 1, '2025-12-10', 'Video Musical del Año', 'Mejor video musical', 0);
+INSERT INTO `categorias_nominaciones` (`id_categoria_nominacion`, `tipo_categoria_nominacion`, `estatus_categoria_nominacion`, `fecha_categoria_nominacion`, `nombre_categoria_nominacion`, `descripcion_categoria_nominacion`, `contador_nominacion`) VALUES
+(1, 1, 1, '2025-12-10', 'Álbum del Año', 'Mejor álbum del año', 0),
+(2, 1, 1, '2025-12-10', 'Canción del Año', 'Mejor canción del año', 0),
+(3, 1, 1, '2025-12-10', 'Artista Revelación', 'Artista nuevo con mayor impacto', 0),
+(4, 1, 1, '2025-12-10', 'Mejor Colaboración', 'Mejor colaboración entre artistas', 0),
+(5, 1, 1, '2025-12-10', 'Video Musical del Año', 'Mejor video musical', 0);
 
 -- --------------------------------------------------------
 
@@ -206,6 +207,7 @@ CREATE TABLE IF NOT EXISTS `nominaciones` (
   `id_categoria_nominacion` int NOT NULL,
   `id_album` int NOT NULL,
   `id_artista` int NOT NULL,
+  `contador_nominacion` int DEFAULT '0',
   PRIMARY KEY (`id_nominacion`),
   KEY `fk_nominaciones_categorias` (`id_categoria_nominacion`),
   KEY `fk_nominaciones_albumes` (`id_album`),
@@ -216,12 +218,12 @@ CREATE TABLE IF NOT EXISTS `nominaciones` (
 -- Volcado de datos para la tabla `nominaciones`
 --
 
-INSERT INTO `nominaciones` (`id_nominacion`, `fecha_nominacion`, `id_categoria_nominacion`, `id_album`, `id_artista`) VALUES
-(1, '2025-12-10', 1, 1, 1),
-(2, '2025-12-10', 2, 2, 2),
-(3, '2025-12-10', 3, 3, 3),
-(4, '2025-12-10', 4, 4, 4),
-(5, '2025-12-10', 5, 5, 5);
+INSERT INTO `nominaciones` (`id_nominacion`, `fecha_nominacion`, `id_categoria_nominacion`, `id_album`, `id_artista`, `contador_nominacion`) VALUES
+(1, '2025-12-10', 1, 1, 1, 0),
+(2, '2025-12-10', 2, 2, 2, 0),
+(3, '2025-12-10', 3, 3, 3, 0),
+(4, '2025-12-10', 4, 4, 4, 0),
+(5, '2025-12-10', 5, 5, 5, 0);
 
 -- --------------------------------------------------------
 
