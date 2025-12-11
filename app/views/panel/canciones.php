@@ -1,12 +1,9 @@
 <?php
 // Importar librerías
-require_once '../../helpers/menu_lateral_artista.php';
+require_once '../../helpers/menu_lateral.php';
 require_once '../../helpers/funciones_globales.php';
 require_once '../../models/Tabla_canciones.php';
-
 require_once '../../models/Tabla_artista.php';
-
-
 
 session_start();
 
@@ -14,11 +11,6 @@ if (!isset($_SESSION["is_logged"]) || ($_SESSION["is_logged"] == false)) {
     header("location: ../../../index.php?error=No has iniciado sesión&type=warning");
     exit;
 }
-
-// // Instancia del Objeto
-// $tabla_canciones = new Tabla_canciones();
-// $canciones = $tabla_canciones->readAllC();
-
 
 // Instancias
 $tabla_canciones = new Tabla_canciones();
@@ -33,9 +25,6 @@ $id_artista = ($artista) ? $artista->id_artista : 0;
 
 // Obtener SOLO las canciones del artista
 $canciones = $tabla_canciones->readAllByArtista($id_artista);
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -45,45 +34,26 @@ $canciones = $tabla_canciones->readAllByArtista($id_artista);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MTV | awards</title>
-    <!-- Icon -->
     <link rel="icon" href="../../../recursos/img/system/mtv-logo.jpg" type="image/x-icon">
 
-    <!-- Google Font: Source Sans Pro -->
-<link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
-<!-- Font Awesome -->
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<!-- AdminLTE Theme -->
-<link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 
-<!-- Toastr -->
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-    <!-- DataTables Bootstrap 4 -->
-<link rel="stylesheet"
-    href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
 
-<!-- DataTables Responsive -->
-<link rel="stylesheet"
-    href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
 
-<!-- DataTables Buttons -->
-<link rel="stylesheet"
-    href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap4.min.css">
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap4.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
-    <!-- Site wrapper -->
     <div class="wrapper">
-         <!-- Navbar -->
-         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -107,18 +77,13 @@ $canciones = $tabla_canciones->readAllByArtista($id_artista);
                     <a href="../../views/portal/votar.php" class="nav-link">Votar</a>
                 </li>
             </ul>
-            
 
-            <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-
-                <!-- Maximizar -->
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                         <i class="fas fa-expand-arrows-alt"></i>
                     </a>
                 </li>
-                <!-- Cerrar Sesión -->
                 <li class="nav-item">
                     <a class="nav-link" href="../../backend/panel/liberate_user.php" role="button" data-toggle="tooltip"
                         data-placement="top" title="Cerrar Sesión">
@@ -127,9 +92,6 @@ $canciones = $tabla_canciones->readAllByArtista($id_artista);
                 </li>
             </ul>
         </nav>
-        <!-- /.navbar -->
-
-        <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="../../index3.html" class="brand-link">
                 <img src="../../../recursos/img/system/mtv-logo.jpg" alt="AdminLTE Logo" class="brand-image elevation-3"
@@ -146,6 +108,18 @@ $canciones = $tabla_canciones->readAllByArtista($id_artista);
                         <a href="#" class="d-block"><?= $_SESSION["nickname"] ?></a>
                     </div>
                 </div>
+
+                <div class="form-inline">
+                    <div class="input-group" data-widget="sidebar-search">
+                        <input class="form-control form-control-sidebar" type="search" placeholder="¿Qué deseas buscar?"
+                            aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-sidebar">
+                                <i class="fas fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
@@ -155,7 +129,6 @@ $canciones = $tabla_canciones->readAllByArtista($id_artista);
             </div>
         </aside>
 
-        <!-- Content Wrapper -->
         <div class="content-wrapper">
             <?php
             $breadcrumb = array(
@@ -233,40 +206,30 @@ $canciones = $tabla_canciones->readAllByArtista($id_artista);
         </footer>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
-<!-- Bootstrap 4 -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/demo.js"></script>
 
-<!-- AdminLTE App -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<!-- AdminLTE Demo (opcional, normalmente no se usa en producción) -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/demo.js"></script>
+    <?php if (isset($_SESSION['message'])): ?>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                <?=
+                mostrar_alerta_mensaje(
+                    $_SESSION['message']["type"],
+                    $_SESSION['message']["description"],
+                    $_SESSION['message']["title"]
+                );
+                ?>
+            });
+        </script>
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
 
-<!-- Toastr -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-<?php if (isset($_SESSION['message'])): ?>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        <?=
-            mostrar_alerta_mensaje(
-                $_SESSION['message']["type"],
-                $_SESSION['message']["description"],
-                $_SESSION['message']["title"]
-            );
-        ?>
-    });
-</script>
-<?php unset($_SESSION['message']); ?>
-<?php endif; ?>
-
-
-    
 </body>
-
 </html>

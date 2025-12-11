@@ -1,6 +1,6 @@
 <?php
 // Importar librerías
-require_once '../../helpers/menu_lateral_artista.php';
+require_once '../../helpers/menu_lateral.php';
 require_once '../../helpers/funciones_globales.php';
 require_once '../../models/Tabla_albumes.php';
 

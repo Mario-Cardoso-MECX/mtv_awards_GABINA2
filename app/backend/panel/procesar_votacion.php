@@ -2,40 +2,60 @@
 session_start();
 require_once '../../config/Conecct.php';
 
-// Validar que el usuario esté logueado (punto de rúbrica)
+// Validar login
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: ../../views/portal/login.php?error=necesitas_login");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_nominacion = $_POST['id_nominacion'];
+    $db = new Conecct();
+    $conexion = $db->conecct;
+
+    $id_nominacion = $_POST['id_nominacion'] ?? null; // Usar ?? null para evitar warnings si no llega
     $id_usuario = $_SESSION['id_usuario'];
-    
-    // 1. Verificar si el usuario ya votó en esta categoría (opcional, buena práctica)
-    // Para simplificar, asumiremos que pueden votar varias veces o lo controlas en frontend.
-    
-    // 2. Insertar el voto en la tabla historial 'votaciones'
-    // Primero obtenemos datos de la nominación para llenar la tabla votaciones correctamente
-    $query_info = "SELECT id_artista, id_album FROM nominaciones WHERE id_nominacion = '$id_nominacion'";
-    $res_info = $conexion->query($query_info);
-    $data_nom = $res_info->fetch_assoc();
-    
-    $id_art = $data_nom['id_artista'] ? $data_nom['id_artista'] : "NULL";
-    $id_alb = $data_nom['id_album'] ? $data_nom['id_album'] : "NULL";
 
-    $sql_voto = "INSERT INTO votaciones (fecha_votacion, id_nominacion, id_usuario, id_artista, id_album) 
-                 VALUES (NOW(), '$id_nominacion', '$id_usuario', $id_art, $id_alb)";
+    if(!$id_nominacion) {
+        die("Error: Faltan datos.");
+    }
 
-    if ($conexion->query($sql_voto) === TRUE) {
-        // 3. Incrementar el contador en la tabla 'nominaciones' (TRIGGER MANUAL)
-        $sql_update = "UPDATE nominaciones SET contador_nominacion = contador_nominacion + 1 WHERE id_nominacion = '$id_nominacion'";
-        $conexion->query($sql_update);
-        
-        header("Location: ../../views/portal/votar.php?msg=voto_exitoso");
-    } else {
-        echo "Error al votar: " . $conexion->error;
+    try {
+        // 1. Obtener datos de la nominación
+        $stmt_info = $conexion->prepare("SELECT id_artista, id_album FROM nominaciones WHERE id_nominacion = :id");
+        $stmt_info->bindParam(':id', $id_nominacion);
+        $stmt_info->execute();
+        $data_nom = $stmt_info->fetch(PDO::FETCH_ASSOC);
+
+        if ($data_nom) {
+            $id_art = $data_nom['id_artista'];
+            $id_alb = $data_nom['id_album'];
+
+            // 2. Registrar el voto en el historial (Evita inyección SQL)
+            $sql_voto = "INSERT INTO votaciones (fecha_votacion, id_nominacion, id_usuario, id_artista, id_album) 
+                         VALUES (NOW(), :nom, :user, :art, :alb)";
+            
+            $stmt_voto = $conexion->prepare($sql_voto);
+            $stmt_voto->bindParam(':nom', $id_nominacion);
+            $stmt_voto->bindParam(':user', $id_usuario);
+            $stmt_voto->bindParam(':art', $id_art);
+            $stmt_voto->bindParam(':alb', $id_alb);
+
+            if ($stmt_voto->execute()) {
+                // 3. ACTUALIZAR EL CONTADOR (Ahora sí existe la columna en la BD)
+                $sql_update = "UPDATE nominaciones SET contador_nominacion = contador_nominacion + 1 WHERE id_nominacion = :nom";
+                $stmt_upd = $conexion->prepare($sql_update);
+                $stmt_upd->bindParam(':nom', $id_nominacion);
+                $stmt_upd->execute();
+
+                header("Location: ../../views/portal/votar.php?msg=voto_exitoso");
+            } else {
+                echo "Error al guardar el voto.";
+            }
+        } else {
+            echo "Nominación no encontrada.";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
-$conexion->close();
 ?>
