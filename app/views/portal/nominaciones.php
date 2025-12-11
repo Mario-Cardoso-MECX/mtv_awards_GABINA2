@@ -1,17 +1,16 @@
 <?php
 session_start();
+// Validación de sesión
 if (!isset($_SESSION["is_logged"]) || $_SESSION["is_logged"] == false) {
     header("location: ../../../index.php?error=Debes iniciar sesión&type=warning");
     exit();
 }
 
-$rol_usuario = isset($_SESSION['rol']) ? intval($_SESSION['rol']) : 0;
-$puede_votar = ($rol_usuario === 4); 
-
 require_once '../../config/Conecct.php';
 $db = new Conecct();
 $conn = $db->conecct;
 
+// Obtener Categorías Activas
 $stmt_cat = $conn->prepare("SELECT * FROM categorias_nominaciones WHERE estatus_categoria_nominacion = 1");
 $stmt_cat->execute();
 $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
@@ -22,11 +21,12 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>MTV Awards | Votar</title>
+    <title>MTV Awards | Nominaciones</title>
     <link rel="icon" href="../../../recursos/img/system/mtv-logo.jpg">
     <link rel="stylesheet" href="../../../recursos/recursos_portal/style.css">
     <link rel="stylesheet" href="../../../recursos/recursos_portal/style-votar.css">
     <style>
+        /* Estilos del modal y menú */
         .modal-content { background-color: #1a1a1a; color: white; border: 1px solid #333; }
         .modal-header { border-bottom: 1px solid #333; }
         .close { color: white; opacity: 1; }
@@ -50,8 +50,8 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
                                     <li><a href="./event.php">Eventos</a></li>
                                     <li><a href="./albums-store.php">Géneros</a></li>
                                     <li><a href="./artistas.php">Artistas</a></li>
-                                    <li><a href="./nominaciones.php">Nominaciones</a></li>
-                                    <li class="active"><a href="./votar.php">Votar</a></li> <li><a href="./resultados.php">Resultados</a></li>
+                                    <li class="active"><a href="./nominaciones.php">Nominaciones</a></li> <li><a href="./votar.php">Votar</a></li>
+                                    <li><a href="./resultados.php">Resultados</a></li>
                                 </ul>
                                 <div class="login-register-cart-button d-flex align-items-center">
                                     <div class="login-register-btn mr-50">
@@ -79,19 +79,13 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
 
     <section class="breadcumb-area bg-img bg-overlay" style="background-image: url(../../../recursos/recursos_portal/img/bg-img/breadcumb.jpg);">
         <div class="bradcumbContent">
-            <h2>Zona de Votación</h2>
-            <p>Tu voto decide al ganador</p>
+            <h2>Nominados Oficiales</h2>
+            <p>Conoce a los candidatos de este año</p>
         </div>
     </section>
 
     <section class="oneMusic-buy-now-area mb-100 section-padding-100">
         <div class="container">
-            <?php if (!$puede_votar): ?>
-                <div class="alert alert-warning text-center mb-5">
-                    <strong>Modo Visualización:</strong> Estás conectado como Administrador o Artista. No tienes permisos para votar.
-                </div>
-            <?php endif; ?>
-
             <?php if (count($categorias) > 0): ?>
                 <?php foreach ($categorias as $cat): ?>
                     <div class="row mb-5">
@@ -104,10 +98,10 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
 
                         <?php 
                         $id_cat = $cat['id_categoria_nominacion'];
-                        $sql_nom = "SELECT n.id_nominacion, n.contador_nominacion, 
+                        $sql_nom = "SELECT n.id_nominacion, 
                                            a.pseudonimo_artista, a.biografia_artista, a.nacionalidad_artista,
                                            u.imagen_usuario as imagen_artista,
-                                           al.titulo_album, al.imagen_album, al.descripcion_album, al.fecha_lanzamiento_album,
+                                           al.id_album, al.titulo_album, al.imagen_album, al.descripcion_album, al.fecha_lanzamiento_album,
                                            g.nombre_genero
                                     FROM nominaciones n
                                     LEFT JOIN artistas a ON n.id_artista = a.id_artista
@@ -124,15 +118,13 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
                         <?php if (count($nominados) > 0): ?>
                             <?php foreach ($nominados as $nom): ?>
                                 <?php 
-                                    $esAlbum = !empty($nom['titulo_album']);
+                                    $esAlbum = !empty($nom['id_album']);
                                     $nombre = $esAlbum ? $nom['titulo_album'] : $nom['pseudonimo_artista'];
-                                    
                                     $imgRaw = "";
                                     if (!empty($nom['imagen_artista'])) { $imgRaw = "../../../recursos/img/users/" . $nom['imagen_artista']; } 
                                     elseif (!empty($nom['imagen_album'])) { $imgRaw = "../../../recursos/img/albums/" . $nom['imagen_album']; } 
                                     else { $imgRaw = "../../../recursos/img/casete.png"; }
                                 ?>
-
                                 <div class="col-12 col-sm-6 col-lg-3">
                                     <div class="single-album-area wow fadeInUp" data-wow-delay="100ms">
                                         <div class="album-thumb">
@@ -140,17 +132,32 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                         <div class="album-info text-center mt-3">
                                             <h5><?= htmlspecialchars($nombre) ?></h5>
-                                            <p class="text-muted">Votos: <strong><?= $nom['contador_nominacion'] ?></strong></p>
-                                            
-                                            <div class="d-flex justify-content-center">
-                                                <?php if ($puede_votar): ?>
-                                                    <form action="../../backend/panel/procesar_votacion.php" method="POST" class="mr-2">
-                                                        <input type="hidden" name="id_nominacion" value="<?= $nom['id_nominacion'] ?>">
-                                                        <button type="submit" class="btn oneMusic-btn btn-sm">Votar</button>
-                                                    </form>
-                                                <?php else: ?>
-                                                    <button type="button" class="btn oneMusic-btn btn-sm btn-disabled mr-2" disabled>Votar</button>
-                                                <?php endif; ?>
+                                            <button type="button" class="btn oneMusic-btn btn-sm btn-dark mt-2" data-toggle="modal" data-target="#modalDetalle<?= $nom['id_nominacion'] ?>">Ver Detalles</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="modalDetalle<?= $nom['id_nominacion'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title"><?= htmlspecialchars($nombre) ?></h5>
+                                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-5"><img src="<?= $imgRaw ?>" class="img-fluid rounded mb-3" alt="Portada"></div>
+                                                    <div class="col-md-7">
+                                                        <?php if ($esAlbum): ?>
+                                                            <p><strong>Género:</strong> <?= htmlspecialchars($nom['nombre_genero'] ?? 'N/A') ?></p>
+                                                            <p><strong>Lanzamiento:</strong> <?= htmlspecialchars($nom['fecha_lanzamiento_album']) ?></p>
+                                                            <p><strong>Descripción:</strong><br> <?= nl2br(htmlspecialchars($nom['descripcion_album'] ?? '')) ?></p>
+                                                        <?php else: ?>
+                                                            <p><strong>Nacionalidad:</strong> <?= htmlspecialchars($nom['nacionalidad_artista']) ?></p>
+                                                            <p><strong>Biografía:</strong><br> <?= nl2br(htmlspecialchars($nom['biografia_artista'] ?? '')) ?></p>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -176,6 +183,8 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
                     <div class="footer-nav">
                         <ul>
                             <li><a href="./index.php">Inicio</a></li>
+                            <li><a href="./albums-store.php">Géneros</a></li>
+                            <li><a href="./nominaciones.php">Nominaciones</a></li>
                             <li><a href="./votar.php">Votar</a></li>
                         </ul>
                     </div>
@@ -189,11 +198,5 @@ $categorias = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
     <script src="../../../recursos/recursos_portal/js/plugins/plugins.js"></script>
     <script src="../../../recursos/recursos_portal/js/active.js"></script>
-    
-    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'voto_exitoso'): ?>
-        <script>alert("¡Voto registrado!");</script>
-    <?php elseif (isset($_GET['msg']) && $_GET['msg'] == 'ya_votaste'): ?>
-        <script>alert("¡Ya has votado en esta categoría!");</script>
-    <?php endif; ?>
 </body>
 </html>
