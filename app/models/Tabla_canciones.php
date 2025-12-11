@@ -38,8 +38,7 @@ class Tabla_canciones
 
     public function readAllC()
 {
-    $sql = "SELECT c.* 
-            FROM " . $this->table . " c 
+    $sql = "SELECT c.* FROM " . $this->table . " c 
             INNER JOIN artistas a ON c.id_artista = a.id_artista 
             ORDER BY c.nombre_cancion";
     try {
@@ -56,8 +55,7 @@ class Tabla_canciones
 
     public function readAllCanciones($id_usuario)
     {
-        $sql = "SELECT c.* 
-                FROM " . $this->table . " c 
+        $sql = "SELECT c.* FROM " . $this->table . " c 
                 INNER JOIN artistas a ON c.id_artista = a.id_artista 
                 WHERE a.id_usuario = :id_usuario
                 ORDER BY c.nombre_cancion";
@@ -175,5 +173,3 @@ class Tabla_canciones
 }
 
 }
-
-
