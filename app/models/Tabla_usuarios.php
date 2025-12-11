@@ -84,30 +84,34 @@ class Tabla_usuarios
         }//end catch
     }//end readAllUsers
 
-    public function readAllUsersForArt()
+    public function readAllUsersForArt($id_usuario_actual = null)
     {
         /**
          * QUERY - SELECT
-         * Selecciona usuarios tipo Artista (id_rol = 85) que no tengan registros en la tabla artistas.
-         * SELECT * FROM usuarios 
-         * INNER JOIN roles ON usuarios.id_rol = roles.id_rol
-         * WHERE usuarios.id_rol = 85 AND usuarios.id_usuario NOT IN (SELECT id_usuario FROM artistas)
-         * ORDER BY ap_usuario;
+         * Selecciona usuarios Artista (rol 85) disponibles
+         * SI se pasa un ID (modo edición), TAMBIÉN incluye a ese usuario aunque ya esté asignado.
          */
-        $sql = "SELECT * 
-            FROM " . $this->table . " 
+        $sql = "SELECT * FROM " . $this->table . " 
             INNER JOIN roles ON " . $this->table . ".id_rol = roles.id_rol
             WHERE " . $this->table . ".id_rol = 85
-            AND " . $this->table . ".id_usuario NOT IN (SELECT id_usuario FROM artistas)
-            ORDER BY ap_usuario;";
+            AND (" . $this->table . ".id_usuario NOT IN (SELECT id_usuario FROM artistas)";
+            
+        // Si estamos editando, permitimos ver al usuario dueño de este perfil
+        if ($id_usuario_actual != null) {
+            $sql .= " OR " . $this->table . ".id_usuario = :id_actual";
+        }
+        
+        $sql .= ") ORDER BY ap_usuario;";
+
         try {
-            // Preparar la consulta
             $stmt = $this->connect->prepare($sql);
-            // Configurar el modo de fetch
+            
+            if ($id_usuario_actual != null) {
+                $stmt->bindValue(":id_actual", $id_usuario_actual, PDO::PARAM_INT);
+            }
+            
             $stmt->setFetchMode(PDO::FETCH_OBJ);
-            // Ejecutar la consulta
             $stmt->execute();
-            // Retornar los resultados obtenidos
             $users = $stmt->fetchAll();
             return (!empty($users)) ? $users : array();
         } catch (PDOException $e) {

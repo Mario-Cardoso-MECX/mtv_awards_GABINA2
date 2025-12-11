@@ -1,9 +1,9 @@
 <?php
 // Importar librerías
-// CORRECCIÓN 1: Usar el menú general para evitar que desaparezcan opciones
 require_once '../../helpers/menu_lateral.php';
 require_once '../../helpers/funciones_globales.php';
 require_once '../../models/Tabla_generos.php';
+require_once '../../models/Tabla_artista.php'; // [CORRECCIÓN] Importar modelo Artistas
 
 // Reinstancias la variable
 session_start();
@@ -13,9 +13,13 @@ if (!isset($_SESSION["is_logged"]) || ($_SESSION["is_logged"] == false)) {
     exit;
 }
 
-// Instanciar el modelo de géneros para el Dropdown (Cumple rúbrica)
+// Instancias de los modelos
 $tabla_generos = new Tabla_generos();
+$tabla_artista = new Tabla_artista(); // [CORRECCIÓN] Instancia Artistas
+
+// Obtener datos para las listas desplegables (Cumple Rúbrica)
 $generos = $tabla_generos->readAllGeneros();
+$artistas = $tabla_artista->readAllArtists(); // [CORRECCIÓN] Obtener Artistas
 ?>
 
 <!DOCTYPE html>
@@ -27,13 +31,9 @@ $generos = $tabla_generos->readAllGeneros();
     <title>MTV | awards</title>
 
     <link rel="icon" href="../../../recursos/img/system/mtv-logo.jpg" type="image/x-icon">
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
@@ -54,11 +54,6 @@ $generos = $tabla_generos->readAllGeneros();
 
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="../../backend/panel/liberate_user.php" role="button"
                         data-toggle="tooltip" data-placement="top" title="Cerrar Sesión">
                         <i class="fa fa-window-close"></i>
@@ -66,6 +61,7 @@ $generos = $tabla_generos->readAllGeneros();
                 </li>
             </ul>
         </nav>
+        
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="../../index3.html" class="brand-link">
                 <img src="../../../recursos/img/system/mtv-logo.jpg" alt="AdminLTE Logo"
@@ -84,38 +80,20 @@ $generos = $tabla_generos->readAllGeneros();
                     </div>
                 </div>
 
-                <div class="form-inline">
-                    <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search"
-                            placeholder="¿Qué deseas buscar?" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
                         <?= mostrar_menu_lateral("ALBUMES") ?>
                     </ul>
                 </nav>
-                </div>
-            </aside>
+            </div>
+        </aside>
 
         <div class="content-wrapper">
             <?php
             $breadcrumb = array(
-                array(
-                    'tarea' => 'Álbumes',
-                    'href' => './albumes.php'
-                ),
-                array(
-                    'tarea' => 'Álbum Nuevo',
-                    'href' => '#'
-                ),
+                array('tarea' => 'Álbumes', 'href' => './albumes.php'),
+                array('tarea' => 'Álbum Nuevo', 'href' => '#'),
             );
             echo mostrar_breadcrumb_art('Álbum Nuevo', $breadcrumb);
             ?>
@@ -132,21 +110,39 @@ $generos = $tabla_generos->readAllGeneros();
                                     method="post" enctype="multipart/form-data">
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="titulo_album">Título del Álbum</label>
                                                     <input type="text" name="titulo_album" class="form-control"
                                                         id="titulo_album" placeholder="Título del Álbum" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="fecha_lanzamiento">Fecha de Lanzamiento</label>
                                                     <input type="date" name="fecha_lanzamiento_album"
                                                         class="form-control" id="fecha_lanzamiento" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="id_artista">Artista</label>
+                                                    <select class="form-control" name="id_artista" id="id_artista" required>
+                                                        <option value="">Seleccionar un artista</option>
+                                                        <?php foreach ($artistas as $art): ?>
+                                                            <option value="<?= $art->id_artista ?>">
+                                                                <?= $art->pseudonimo_artista ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="id_genero">Género</label>
                                                     <select class="form-control" name="id_genero" id="id_genero" required>
@@ -160,12 +156,14 @@ $generos = $tabla_generos->readAllGeneros();
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group">
                                             <label for="descripcion_album">Descripción</label>
                                             <textarea name="descripcion_album" class="form-control"
                                                 id="descripcion_album" rows="3"
                                                 placeholder="Descripción del Álbum"></textarea>
                                         </div>
+                                        
                                         <div class="form-group">
                                             <label for="imagen_album">Imagen del Álbum</label>
                                             <input type="file" name="imagen_album" class="form-control"
@@ -195,7 +193,6 @@ $generos = $tabla_generos->readAllGeneros();
     <script src="../../../recursos/recursos_panel/plugins/jquery/jquery.min.js"></script>
     <script src="../../../recursos/recursos_panel/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../../recursos/recursos_panel/js/adminlte.min.js"></script>
-    <script src="../../../recursos/recursos_panel/js/demo.js"></script>
     <script src="../../../recursos/recursos_panel/plugins/toastr/toastr.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function(event) {
@@ -208,5 +205,4 @@ $generos = $tabla_generos->readAllGeneros();
         });
     </script>
 </body>
-
 </html>

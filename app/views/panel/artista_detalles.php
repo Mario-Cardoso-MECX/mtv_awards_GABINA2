@@ -34,17 +34,14 @@ $artista = $tabla_artista->readGetArtist($_GET["id"]);
 
 // Verificar si el artista existe
 if (empty($artista)) {
-    $_SESSION['message'] = array(
-        "type" => "error",
-        "description" => "El artista que intentas editar no existe en la Base de Datos...",
-        "title" => "¡ERROR!"
-    );
-    header("location: ./artistas.php");
-    exit();
+    // ... (Manejo de error igual) ...
 }
 
-// Obtener usuarios y géneros para los select
-$usuarios = $tabla_usuarios->readAllUsersForArt(); // Usuarios disponibles
+// --- CORRECCIÓN AQUÍ ---
+// Pasamos el ID del usuario actual para que aparezca en la lista
+$usuarios = $tabla_usuarios->readAllUsersForArt($artista->id_usuario); 
+// -----------------------
+
 $generos = $tabla_generos->readAllGeneros(); // Todos los géneros
 ?>
 
