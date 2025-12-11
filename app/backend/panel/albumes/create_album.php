@@ -1,6 +1,5 @@
 <?php
 // app/backend/panel/albumes/create_album.php
-echo 'Validating...';
 
 require_once '../../../models/Tabla_albumes.php';
 require_once '../../../models/Tabla_artista.php';

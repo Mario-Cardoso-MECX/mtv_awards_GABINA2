@@ -1,6 +1,5 @@
 <?php
 // app/backend/panel/canciones/create_cancion.php
-echo 'Validating...';
 
 require_once '../../../models/Tabla_canciones.php';
 require_once '../../../models/Tabla_artista.php';

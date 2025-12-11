@@ -11,21 +11,15 @@ $connect = new Conecct();
   <meta name="description" content="">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-
-  <!-- Title -->
   <title>MTV awards</title>
 
-  <!-- Favicon -->
   <link rel="icon" href="./recursos/img/system/mtv-logo.jpg">
 
-  <!-- Stylesheet -->
   <link rel="stylesheet" href="./recursos/recursos_portal/style.css">
 
-</head>
+  </head>
 
 <body>
-  <!-- Preloader -->
   <div class="preloader d-flex align-items-center justify-content-center">
     <div class="lds-ellipsis">
       <div></div>
@@ -35,22 +29,17 @@ $connect = new Conecct();
     </div>
   </div>
 
-  <!-- ##### Header Area Start ##### -->
   <header class="header-area">
     <div class="oneMusic-main-menu">
       <div class="classy-nav-container breakpoint-off">
         <div class="container">
-          <!-- Menu -->
           <nav class="classy-navbar justify-content-between" id="oneMusicNav">
 
-            <!-- Nav brand -->
             <a href="./app/views/portal/index.php" class="nav-brand"><img
                 src="./recursos/img/system/mtv-logo-blanco.png" width="50%" alt=""></a>
 
-            <!-- Menu -->
             <div class="classy-menu">
 
-              <!-- Nav Start -->
               <div class="classynav">
                 <ul>
                   <li><a href="./app/views/portal/index.php">Inicio</a></li>
@@ -58,11 +47,10 @@ $connect = new Conecct();
                   <li><a href="./app/views/portal/albums-store.php">Generos</a></li>
                   <li><a href="./app/views/portal/artistas.php">Artistas</a></li>
                   <li><a href="./app/views/portal/votar.php">Votar</a></li>
+                  <li><a href="./app/views/portal/resultados.php">Resultados</a></li>
                 </ul>
 
-                <!-- Login/Register & Cart Button -->
                 <div class="login-register-cart-button d-flex align-items-center">
-                  <!-- Login/Register -->
                   <div class="login-register-btn mr-50">
                     <?php if (isset($_SESSION["nickname"])): ?>
                       <div class="dropdown">
@@ -80,39 +68,21 @@ $connect = new Conecct();
                       <a href="./index.php">Iniciar sesión</a>
                     <?php endif; ?>
                   </div>
-
-                  <!-- Cart Button -->
                 </div>
 
               </div>
-              <!-- Nav End -->
-
-            </div>
+              </div>
           </nav>
         </div>
       </div>
     </div>
-    <!-- Navbar Area -->
-    <div class="oneMusic-main-menu">
-      <div class="classy-nav-container breakpoint-off">
-        <div class="container">
-          <!-- Menu -->
-        </div>
-      </div>
-    </div>
   </header>
-  <!-- ##### Header Area End ##### -->
-
-  <!-- ##### Breadcumb Area Start ##### -->
   <section class="breadcumb-area bg-img bg-overlay"
     style="background-image: url(./recursos/recursos_portal/img/bg-img/breadcumb3.jpg);">
     <div class="bradcumbContent">
       <h2>Iniciar Sesión</h2>
     </div>
   </section>
-  <!-- ##### Breadcumb Area End ##### -->
-
-  <!-- ##### Login Area Start ##### -->
   <section class="login-area section-padding-100">
     <div class="container">
       <div class="row justify-content-center">
@@ -127,7 +97,6 @@ $connect = new Conecct();
             ?>
 
             <h3>bienvenido de nuevo</h3>
-            <!-- Login Form -->
             <div class="login-form">
               <form action="./app/backend/panel/validate_user.php" method="post">
                 <div class="form-group">
@@ -143,6 +112,9 @@ $connect = new Conecct();
                     placeholder="Ingresa tu contraseña">
                 </div>
                 <button type="submit" class="btn oneMusic-btn mt-30">Login</button>
+                <div class="text-center mt-3">
+    <a href="register.php" style="color: #000;">¿No tienes cuenta? Regístrate aquí</a>
+</div>
               </form>
             </div>
           </div>
@@ -150,9 +122,6 @@ $connect = new Conecct();
       </div>
     </div>
   </section>
-  <!-- ##### Login Area End ##### -->
-
-  <!-- ##### Footer Area Start ##### -->
   <footer class="footer-area">
     <div class="container">
       <div class="row d-flex flex-wrap align-items-center">
@@ -168,24 +137,21 @@ $connect = new Conecct();
               <li><a href="./app/views/portal/albums-store.php">Generos</a></li>
               <li><a href="./app/views/portal/artistas.php">Artistas</a></li>
               <li><a href="./app/views/portal/votar.php">Votar</a></li>
+              <li><a href="./app/views/portal/resultados.php">Resultados</a></li>
             </ul>
           </div>
         </div>
       </div>
     </div>
   </footer>
-  <!-- ##### Footer Area Start ##### -->
-
-  <!-- ##### All Javascript Script ##### -->
-  <!-- jQuery-2.2.4 js -->
-  <script src="./recursos/recursos_portal/js/jquery/jquery-2.2.4.min.js"></script>
-  <!-- Popper js -->
-  <script src="./recursos/recursos_portal/js/bootstrap/popper.min.js"></script>
-  <!-- Bootstrap js -->
-  <script src="./recursos/recursos_portal/js/bootstrap/bootstrap.min.js"></script>
-  <!-- All Plugins js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+  
   <script src="./recursos/recursos_portal/js/plugins/plugins.js"></script>
-  <!-- Active js -->
+  
   <script src="./recursos/recursos_portal/js/active.js"></script>
 </body>
 
